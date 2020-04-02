@@ -1,3 +1,8 @@
+terraform {
+  required_version = "~> 0.12"
+  experiments = [variable_validation]
+}
+
 provider "aws" {
   version = "~> 2.55"
   profile = "default"
@@ -35,12 +40,14 @@ data "aws_iam_policy" "eksClusterPolicy" {
 
 # Attach the EKS Service managed policy to the eksServiceRole
 resource "aws_iam_role_policy_attachment" "eksManagedEksServicePolicy" {
+  # The role(s) the policy should be applied to
   role       = aws_iam_role.eksServiceRole.name
   policy_arn = data.aws_iam_policy.eksServicePolicy.arn
 }
 
 # Attach the EKS Cluster managed policy to the eksServiceRole
 resource "aws_iam_role_policy_attachment" "eksManagedEksClusterPolicy" {
+  # The role(s) the policy should be applied to
   role       = aws_iam_role.eksServiceRole.name
   policy_arn = data.aws_iam_policy.eksClusterPolicy.arn
 }

@@ -49,8 +49,17 @@ resource "aws_vpc" "eksVpc" {
     cidr_block = var.vpcBlock
     enable_dns_support = true
     enable_dns_hostnames = true
+
     tags = {
         Name = "eksVpc"
         Environment = "development"
+    }
+}
+
+resource "aws_internet_gateway" "eksVpcInternetGateway" {
+    vpc_id = aws_vpc.eksVpc.id
+
+    tags = {
+        Name = "eksVpcInternetGateway"
     }
 }
