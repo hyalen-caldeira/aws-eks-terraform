@@ -1,46 +1,10 @@
-variable "vpcBlock" {
-    type = string
-    default = "192.168.0.0/16"
-    description = "The CIDR range for the VPC. This should be a valid private (RFC 1918) CIDR range"
-
-    # Example of validation block in case needed
-    validation {
-        condition = length(var.vpcBlock) > 4 && substr(var.vpcBlock, 0, 4) == "192."
-        error_message = "Any error message ..."
-    }
-}
-
-variable "publicSubnet01Block" {
-    type = string
-    default = "192.168.0.0/18"
-    description = "CidrBlock for public subnet 01 within the VPC"
-}
-
-variable "publicSubnet02Block" {
-    type = string
-    default = "192.168.64.0/18"
-    description = "CidrBlock for public subnet 02 within the VPC"
-}
-
-variable "privateSubnet01Block" {
-    type = string
-    default = "192.168.128.0/18"
-    description = "CidrBlock for private subnet 01 within the VPC"
-}
-
-variable "privateSubnet02Block" {
-    type = string
-    default = "192.168.192.0/18"
-    description = "CidrBlock for private subnet 02 within the VPC"
-}
-
 /*
 VPC --> Internet Gateway {
     Subnet 1 (Public) --> Route Table (we need to associate it to each subnet) 
         --> Route (destination (CIDR inbound) --> target (Internet Gateway)) {
             EC2-1,
             EC2-2,
-            LoadBalance
+            LoadBalance,
             NAT Gateway (it must be associate with a public subnet), which gives access to the internet from 
             private subnet. NAT Gateway will make a bridge between the private EC2 to the NAT Gateway
     }
@@ -55,7 +19,7 @@ VPC --> Internet Gateway {
 
 We first create the VPC, then we need to create/associate a Internet Gateway (IGW) to the VPC. 
 Observe we can only have one IGW per VPC. The creation of the IGW doesn't guarantee you can access the EC2 inside 
-your VPC/Subnet. We need to create a Route Table and a Route. The Route contains the CIDR (Inbound) and Target
+your VPC/Subnet. We need to create a Route Table and a Route. The Route contains the CIDR (Inbound) and the Target
 */
 resource "aws_vpc" "eksVpc" {
     cidr_block = var.vpcBlock
@@ -160,7 +124,8 @@ resource "aws_subnet" "publicSubnet01" {
     # availability_zone = 
 
     tags = {
-        Name = "publicSubnet01"
+        Name = "publicSubnet01",
+        "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
     }
 }
 
@@ -171,7 +136,8 @@ resource "aws_subnet" "publicSubnet02" {
     # availability_zone = 
 
     tags = {
-        Name = "publicSubnet02"
+        Name = "publicSubnet02",
+        "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
     }
 }
 
@@ -181,7 +147,8 @@ resource "aws_subnet" "privateSubnet01" {
     # availability_zone = 
 
     tags = {
-        Name = "privateSubnet01"
+        Name = "privateSubnet01",
+        "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
     }
 }
 
@@ -191,7 +158,8 @@ resource "aws_subnet" "privateSubnet02" {
     # availability_zone = 
 
     tags = {
-        Name = "privateSubnet02"
+        Name = "privateSubnet02",
+        "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
     }
 }
 
@@ -221,4 +189,22 @@ resource "aws_security_group" "allow_tls" {
     name = "vpcSecurityGroup"
     description = "Cluster communication with worker nodes"
     vpc_id = aws_vpc.eksVpc.id
+}
+
+output "awsEksVPC-id" {
+    value = aws_vpc.eksVpc.id
+}
+
+output "awsEksVPCSubnet-ids" {
+    value = join(
+        ", ", 
+        [aws_subnet.publicSubnet01.id, 
+        aws_subnet.publicSubnet02.id, 
+        aws_subnet.privateSubnet01.id,
+        aws_subnet.privateSubnet02.id
+    ])
+}
+
+output "awsEksVPCSecurityGroup-arn" {
+    value = aws_security_group.allow_tls.arn
 }

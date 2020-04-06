@@ -8,7 +8,7 @@ data "aws_iam_policy_document" "eksAssumeRolePolicy" {
     effect = "Allow"
 
     principals {
-      type        = "Service"
+      type = "Service"
       identifiers = [
         "eks.amazonaws.com",
         ]
@@ -28,14 +28,14 @@ data "aws_iam_policy" "eksClusterPolicy" {
 
 # Attach the EKS Service managed policy to the eksServiceRole
 resource "aws_iam_role_policy_attachment" "eksManagedEksServicePolicy" {
-  # The role(s) the policy should be applied to
+  # The role(s) that the policy should be applied to
   role       = aws_iam_role.eksServiceRole.name
   policy_arn = data.aws_iam_policy.eksServicePolicy.arn
 }
 
 # Attach the EKS Cluster managed policy to the eksServiceRole
 resource "aws_iam_role_policy_attachment" "eksManagedEksClusterPolicy" {
-  # The role(s) the policy should be applied to
+  # The role(s) that the policy should be applied to
   role       = aws_iam_role.eksServiceRole.name
   policy_arn = data.aws_iam_policy.eksClusterPolicy.arn
 }

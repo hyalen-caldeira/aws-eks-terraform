@@ -1,5 +1,5 @@
 resource "aws_eks_cluster" "eksMainCluster" {
-    name     = "mainCluster"
+    name = "mainCluster"
     # version = "1.0"
     role_arn = aws_iam_role.eksServiceRole.arn
 
@@ -15,6 +15,7 @@ resource "aws_eks_cluster" "eksMainCluster" {
     # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
     # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
     depends_on = [
-        aws_iam_role.eksServiceRole
+        aws_iam_role.eksServiceRole,
+        aws_vpc.eksVpc
     ]
 }
