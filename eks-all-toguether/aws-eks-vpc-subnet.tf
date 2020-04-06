@@ -1,15 +1,3 @@
-terraform {
-  required_version = "~> 0.12"
-  experiments = [variable_validation]
-}
-
-provider "aws" {
-    version = "~> 2.55"
-    profile = "default"
-    region = var.region
-}
-
-# -------------- Variables --------------
 variable "vpcBlock" {
     type = string
     default = "192.168.0.0/16"
@@ -46,8 +34,6 @@ variable "privateSubnet02Block" {
     description = "CidrBlock for private subnet 02 within the VPC"
 }
 
-# -------------- Resources --------------
-# -------------- VPC --------------
 /*
 VPC --> Internet Gateway {
     Subnet 1 (Public) --> Route Table (we need to associate it to each subnet) 
@@ -67,7 +53,7 @@ VPC --> Internet Gateway {
     }
 }
 
-We first create the VPC --> Then we need to create/associate a Internet Gateway (IGW) to the VPC. 
+We first create the VPC, then we need to create/associate a Internet Gateway (IGW) to the VPC. 
 Observe we can only have one IGW per VPC. The creation of the IGW doesn't guarantee you can access the EC2 inside 
 your VPC/Subnet. We need to create a Route Table and a Route. The Route contains the CIDR (Inbound) and Target
 */
@@ -236,5 +222,3 @@ resource "aws_security_group" "allow_tls" {
     description = "Cluster communication with worker nodes"
     vpc_id = aws_vpc.eksVpc.id
 }
-
-# -------------- Outputs --------------
