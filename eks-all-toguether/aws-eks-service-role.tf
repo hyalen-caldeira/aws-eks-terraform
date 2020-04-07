@@ -46,6 +46,7 @@ resource "aws_iam_role" "eksServiceRole" {
   assume_role_policy = data.aws_iam_policy_document.eksAssumeRolePolicy.json
 }
 
-output "eksServiceRoleArn" {
-  value = aws_iam_role.eksServiceRole.arn
-}
+# output "eksServiceRoleArn" {
+#   value = aws_iam_role.eksServiceRole.arn
+#   description = ""
+# }

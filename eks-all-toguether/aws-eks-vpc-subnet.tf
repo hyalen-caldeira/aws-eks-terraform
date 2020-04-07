@@ -21,6 +21,15 @@ We first create the VPC, then we need to create/associate a Internet Gateway (IG
 Observe we can only have one IGW per VPC. The creation of the IGW doesn't guarantee you can access the EC2 inside 
 your VPC/Subnet. We need to create a Route Table and a Route. The Route contains the CIDR (Inbound) and the Target
 */
+
+# This tag must exist on subnet resource in order to create the Node Group
+locals {
+    subnet_common_tags = {
+        "kubernetes.io/cluster/mainCluster" = "shared"
+        # anyOtherKey = anyOtherValue
+    }
+}
+
 resource "aws_vpc" "eksVpc" {
     cidr_block = var.vpcBlock
     enable_dns_support = true
@@ -123,10 +132,12 @@ resource "aws_subnet" "publicSubnet01" {
     map_public_ip_on_launch = true
     # availability_zone = 
 
-    tags = {
-        Name = "publicSubnet01",
-        "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
-    }
+    # tags = {
+    #     Name = "publicSubnet01"
+    #     "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
+    # }
+
+    tags = local.subnet_common_tags
 }
 
 resource "aws_subnet" "publicSubnet02" {
@@ -135,10 +146,12 @@ resource "aws_subnet" "publicSubnet02" {
     map_public_ip_on_launch = true
     # availability_zone = 
 
-    tags = {
-        Name = "publicSubnet02",
-        "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
-    }
+    # tags = {
+    #     Name = "publicSubnet02",
+    #     "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
+    # }
+
+    tags = local.subnet_common_tags
 }
 
 resource "aws_subnet" "privateSubnet01" {
@@ -146,10 +159,12 @@ resource "aws_subnet" "privateSubnet01" {
     cidr_block = var.privateSubnet01Block
     # availability_zone = 
 
-    tags = {
-        Name = "privateSubnet01",
-        "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
-    }
+    # tags = {
+    #     Name = "privateSubnet01",
+    #     "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
+    # }
+
+    tags = local.subnet_common_tags
 }
 
 resource "aws_subnet" "privateSubnet02" {
@@ -157,10 +172,12 @@ resource "aws_subnet" "privateSubnet02" {
     cidr_block = var.privateSubnet02Block
     # availability_zone = 
 
-    tags = {
-        Name = "privateSubnet02",
-        "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
-    }
+    # tags = {
+    #     Name = "privateSubnet02",
+    #     "kubernetes.io/cluster/mainCluster" = "shared" # This tag must exist in order to create the Node Group
+    # }
+
+    tags = local.subnet_common_tags
 }
 
 # -------------- Subnet/Route Table Association --------------
@@ -191,20 +208,23 @@ resource "aws_security_group" "allow_tls" {
     vpc_id = aws_vpc.eksVpc.id
 }
 
-output "awsEksVPC-id" {
-    value = aws_vpc.eksVpc.id
-}
+# output "awsEksVPC-id" {
+#     value = aws_vpc.eksVpc.id
+#     description = ""
+# }
 
-output "awsEksVPCSubnet-ids" {
-    value = join(
-        ", ", 
-        [aws_subnet.publicSubnet01.id, 
-        aws_subnet.publicSubnet02.id, 
-        aws_subnet.privateSubnet01.id,
-        aws_subnet.privateSubnet02.id
-    ])
-}
+# output "awsEksVPCSubnet-ids" {
+#     value = join(
+#         ", ", 
+#         [aws_subnet.publicSubnet01.id, 
+#         aws_subnet.publicSubnet02.id, 
+#         aws_subnet.privateSubnet01.id,
+#         aws_subnet.privateSubnet02.id
+#     ])
+#     description = ""
+# }
 
-output "awsEksVPCSecurityGroup-arn" {
-    value = aws_security_group.allow_tls.arn
-}
+# output "awsEksVPCSecurityGroup-arn" {
+#     value = aws_security_group.allow_tls.arn
+#     description = ""
+# }
