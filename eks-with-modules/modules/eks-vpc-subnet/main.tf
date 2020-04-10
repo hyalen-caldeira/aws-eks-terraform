@@ -1,6 +1,5 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # REQUIRE A SPECIFIC TERRAFORM VERSION OR HIGHER
-# This module has been updated with 0.12 syntax, which means it is no longer compatible with any versions below 0.12.
 # ----------------------------------------------------------------------------------------------------------------------
 
 terraform {
@@ -44,11 +43,10 @@ locals {
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
-# 
+# VPC
 # ----------------------------------------------------------------------------------------------------------------------
-resource "aws_vpc" "eksVpc" {
-    count = var.should_be_created ? 1 : 0
 
+resource "aws_vpc" "eksVpc" {
     cidr_block = var.vpc_block
     enable_dns_support = true
     enable_dns_hostnames = true
@@ -59,12 +57,13 @@ resource "aws_vpc" "eksVpc" {
     }
 }
 
-# -------------- Internet Gateway --------------
+# ----------------------------------------------------------------------------------------------------------------------
 # Observe that there's no AWS VPCGatewayAttachment in Terraform. 
 # The aws_internet_gateway resource will create the Internet Gateway and attach it to the specified VPC.
 # That's make sense because there is only one internet gateway per VPC
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "aws_internet_gateway" "eksVpcInternetGateway" {
-    count = var.should_be_created ? 1 : 0
     vpc_id = aws_vpc.eksVpc.id
 
     tags = {
@@ -72,7 +71,10 @@ resource "aws_internet_gateway" "eksVpcInternetGateway" {
     }
 }
 
-# -------------- Route Tables --------------
+# ----------------------------------------------------------------------------------------------------------------------
+# Route Tables
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "aws_route_table" "publicRouteTable" {
     vpc_id = aws_vpc.eksVpc.id
 
@@ -105,7 +107,10 @@ resource "aws_route_table" "privateRouteTable02" {
     }
 }
 
-# -------------- Routes --------------
+# ----------------------------------------------------------------------------------------------------------------------
+# Routes
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "aws_route" "publicRoute" {
     route_table_id = aws_route_table.publicRouteTable.id
     destination_cidr_block  = "0.0.0.0/0"
@@ -124,7 +129,10 @@ resource "aws_route" "privateRoute02" {
     nat_gateway_id = aws_nat_gateway.natGateway02.id
 }
 
-# -------------- Nat Gateways --------------
+# ----------------------------------------------------------------------------------------------------------------------
+# Nat Gateways
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "aws_nat_gateway" "natGateway01" {
     allocation_id = aws_eip.natGatewayEIP1.id
     subnet_id = aws_subnet.publicSubnet01.id
@@ -135,7 +143,10 @@ resource "aws_nat_gateway" "natGateway02" {
     subnet_id = aws_subnet.publicSubnet02.id
 }
 
-# -------------- EIP --------------
+# ----------------------------------------------------------------------------------------------------------------------
+# EIP 
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "aws_eip" "natGatewayEIP1" {
     vpc = true
 }
@@ -144,7 +155,10 @@ resource "aws_eip" "natGatewayEIP2" {
     vpc = true
 }
 
-# -------------- Subnets --------------
+# ----------------------------------------------------------------------------------------------------------------------
+# Subnets
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "aws_subnet" "publicSubnet01" {
     vpc_id = aws_vpc.eksVpc.id
     cidr_block = var.publicSubnet01Block
@@ -199,7 +213,10 @@ resource "aws_subnet" "privateSubnet02" {
     tags = local.subnet_common_tags
 }
 
-# -------------- Subnet/Route Table Association --------------
+# ----------------------------------------------------------------------------------------------------------------------
+# Subnet/Route Table Association
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "aws_route_table_association" "publicSubnet01RouteTableAssociation" {
     subnet_id      = aws_subnet.publicSubnet01.id
     route_table_id = aws_route_table.publicRouteTable.id
@@ -220,7 +237,10 @@ resource "aws_route_table_association" "privateSubnet02RouteTableAssociation" {
     route_table_id = aws_route_table.privateRouteTable02.id
 }
 
-# -------------- Security Group --------------
+# ----------------------------------------------------------------------------------------------------------------------
+# Security Group
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "aws_security_group" "allow_tls" {
     name = "vpcSecurityGroup"
     description = "Cluster communication with worker nodes"
