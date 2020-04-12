@@ -13,15 +13,19 @@ provider "aws" {
     region = var.region
 }
 
-# terraform {
-#     backend "s3" {
-#         # S3
-#         bucket = "aws-eks-terraform-up-and-running-state"
-#         key = "global/s3/terraform.tfstate"
-#         region = "us-east-2"
+# ---------------------------------------------------------------------------------------------------------------------
+# Configure Terraform to store the state in S3 bucket (with encryption and locking)
+# ---------------------------------------------------------------------------------------------------------------------
 
-#         # DynamoDB
-#         dynamodb_table = "terraform-up-and-running-locks"
-#         encrypt = true
-#     }
-# }
+terraform {
+    backend "s3" {
+        # S3
+        bucket = "aws-eks-terraform-up-and-running-state-dev"
+        key = "global/s3/terraform.tfstate"
+        region = "us-east-2"
+
+        # DynamoDB
+        dynamodb_table = "terraform-up-and-running-locks-dev"
+        encrypt = true
+    }
+}
