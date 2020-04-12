@@ -7,3 +7,15 @@ variable "vpc_id" {
   type        = string
   default     = null
 }
+
+variable "cluster_name" {
+    description = ""
+    type = string
+    default = "main_cluster"
+}
+
+variable "node_group_name" {
+    description = ""
+    type = string
+    default = "aws_eks_main_cluster_node_group"
+}
