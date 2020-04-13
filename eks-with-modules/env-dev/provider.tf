@@ -20,7 +20,8 @@ provider "aws" {
 terraform {
     backend "s3" {
         # S3
-        bucket = "aws-eks-terraform-up-and-running-state-dev"
+        # bucket = "aws-eks-terraform-up-and-running-state-dev"
+        bucket = "aws-eks-terraform-up-and-running-state-wendys-dev"
         key = "global/s3/terraform.tfstate"
         region = "us-east-2"
 
