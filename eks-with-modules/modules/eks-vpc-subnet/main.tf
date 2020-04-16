@@ -66,6 +66,10 @@ resource "aws_vpc" "eksVpc" {
 resource "aws_internet_gateway" "eksVpcInternetGateway" {
     vpc_id = aws_vpc.eksVpc.id
 
+    # depends_on = [
+    #     aws_vpc.eksVpc
+    # ]
+
     tags = {
         Name = "eksVpcInternetGateway"
     }
@@ -136,11 +140,19 @@ resource "aws_route" "privateRoute02" {
 resource "aws_nat_gateway" "natGateway01" {
     allocation_id = aws_eip.natGatewayEIP1.id
     subnet_id = aws_subnet.publicSubnet01.id
+
+    # depends_on = [
+    #     aws_vpc.eksVpc
+    # ]
 }
 
 resource "aws_nat_gateway" "natGateway02" {
     allocation_id = aws_eip.natGatewayEIP2.id
     subnet_id = aws_subnet.publicSubnet02.id
+
+    # depends_on = [
+    #     aws_vpc.eksVpc
+    # ]
 }
 
 # ----------------------------------------------------------------------------------------------------------------------

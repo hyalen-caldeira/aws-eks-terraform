@@ -15,6 +15,7 @@ provider "aws" {
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Configure Terraform to store the state in S3 bucket (with encryption and locking)
+# The S3 bucket and DynamoDB table to control lock must exist before set the backend
 # ---------------------------------------------------------------------------------------------------------------------
 
 terraform {

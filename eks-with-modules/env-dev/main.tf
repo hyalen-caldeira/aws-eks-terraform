@@ -10,6 +10,11 @@ data "aws_subnet_ids" "subnet_ids" {
     vpc_id = data.aws_vpc.selected.id
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Modules
+# Take a look variables.tf file to see the variables to be used on command line
+# ---------------------------------------------------------------------------------------------------------------------
+
 module "iam_roles" {
     source = "../modules/eks-iam-policies"
 }
