@@ -1,5 +1,5 @@
 provider "aws" {
-    region = "us-east-2"
+    region = var.region
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -7,7 +7,7 @@ provider "aws" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_s3_bucket" "terraform_state" {
-    bucket = "aws-eks-terraform-up-and-running-state-dev"
+    bucket = "aws-eks-wendys-terraform-up-and-running-state-dev"
     # Enable versioning so we can see the full revision history of our
     # state files
     versioning {
