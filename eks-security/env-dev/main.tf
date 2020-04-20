@@ -22,7 +22,7 @@ module "eks_cluster" {
     source = "../modules/eks-cluster"
     
     eks_cluster_name = var.cluster_name
-    vpc_id = data.aws_vpc.selected.id
+    # vpc_id = data.aws_vpc.selected.id
     subnet_ids = data.aws_subnet_ids.subnet_ids.ids
     role_arn = module.iam_roles.eks_service_role_arn
 }

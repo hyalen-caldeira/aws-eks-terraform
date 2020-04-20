@@ -13,6 +13,11 @@ output "eks_cluster_name" {
 #   terraform output kubeconfig > ~/.kube/config
 #   terraform output config_map_aws_auth > configmap.yml
 #   kubectl apply -f configmap.yml
+/*
+kubectl create namespace test-environment
+kubectl create deploy nginx --image=nginx -n test-environment
+kubectl get all -n test-environment
+*/
 # ---------------------------------------------------------------------------------------------------------------------
 
 locals {

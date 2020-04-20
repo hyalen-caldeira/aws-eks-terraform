@@ -14,6 +14,10 @@ resource "aws_eks_node_group" "awsEksNodeGroup" {
     
     subnet_ids = var.subnet_ids
 
+    instance_types = [
+        "t2.micro"
+    ]
+
     scaling_config {
         desired_size = 1
         max_size = 1
