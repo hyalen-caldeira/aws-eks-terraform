@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "aws_vpc" "selected" {
-  id = module.vpc_subnet.vpc_id
+  id = var.vpc_id
 }
 
 data "aws_subnet_ids" "subnet_ids" {
