@@ -3,6 +3,10 @@ variable "vpc_id" {
     default = 0
 }
 
+variable "region" {
+    default = "us-east-2"
+}
+
 variable "should_be_created" {
     type = bool
     default = false

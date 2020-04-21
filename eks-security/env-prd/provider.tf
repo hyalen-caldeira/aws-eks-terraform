@@ -20,12 +20,14 @@ provider "aws" {
 terraform {
     backend "s3" {
         # S3
-        bucket = "aws-eks-terraform-up-and-running-state-prd"
+        bucket = "aws-eks-terraform-up-and-running-state-dev"
         key = "global/s3/terraform.tfstate"
         region = "us-east-2"
+        profile = "default"
+        shared_credentials_file = "$HOME/.aws/credentials"
 
         # DynamoDB
-        dynamodb_table = "terraform-up-and-running-locks-prd"
+        dynamodb_table = "terraform-up-and-running-locks-dev"
         encrypt = true
     }
 }

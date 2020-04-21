@@ -7,6 +7,12 @@ terraform {
     experiments = [variable_validation]
 }
 
+provider "aws" {
+    version = "~> 2.55"
+    profile = "default"
+    region = var.region
+}
+
 # ----------------------------------------------------------------------------------------------------------------------
 /* VPC --> Internet Gateway {
     Subnet 1 (Public) --> Route Table (we need to associate it to each subnet) 

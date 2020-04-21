@@ -24,6 +24,10 @@ resource "aws_eks_cluster" "eks_main_cluster" {
     ]
 }
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Create your OIDC identity provider for your cluste
+# ----------------------------------------------------------------------------------------------------------------------
+
 resource "aws_iam_openid_connect_provider" "eks_oidc" {
     client_id_list  = ["sts.amazonaws.com"]
     thumbprint_list = []
@@ -31,6 +35,10 @@ resource "aws_iam_openid_connect_provider" "eks_oidc" {
 }
 
 data "aws_caller_identity" "current" {}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# 
+# ----------------------------------------------------------------------------------------------------------------------
 
 data "aws_iam_policy_document" "eks_oidc_assume_role_policy" {
     statement {
